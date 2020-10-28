@@ -10,7 +10,10 @@ sudo apt-get update -q > /dev/null
 echo "Done."
 
 echo -n " == Installing APT packages == "
-sudo apt-get install -q -y zsh fzf kubectl golang jq awscli > /dev/null
+### Add tje APT packages to install here.
+APT_PKGS="zsh fzf kubectl golang jq awscli"
+sudo apt-get install -q -y ${APT_PKGS} > /dev/null
+echo ${APT_PKGS}
 echo "Done."
 
 echo -n " == Downloading git binary releases in ~/.bin == "
@@ -21,18 +24,28 @@ then
   wget -O ~/.bin/kubectx https://github.com/ahmetb/kubectx/releases/latest/download/kubectx
   wget -O ~/.bin/kubens https://github.com/ahmetb/kubectx/releases/latest/download/kubens
   chmod +x ~/.bin/kubectx ~/.bin/kubens
+  echo -n "kubectx, kubens, "
 fi
 echo "Done."
 
 echo -n " == Downloading go commands == "
 cd ~
 GO111MODULE=on go get github.com/mikefarah/yq/v3 > /dev/null
+echo -n "yq, "
 echo "Done."
+
+
+echo -n " == Installing Carvel (kapp, ytt, ...) == "
+wget -O- https://k14s.io/install.sh | K14SIO_INSTALL_BIN_DIR=$HOME/.bin bash
+
+echo
+echo
+
 
 ## Configure Home environment
 cd ~
 echo -n " == Preparing dotfiles == "
-[ -d ~/dotfiles ] && git clone https://github.com/jwlabs/dotfiles
+[ ! -d ~/dotfiles ] && git clone https://github.com/jwlabs/dotfiles || (cd ~/dotfiles && git pull)
 [ -f ~/.zshrc -a -f ~/dotfiles/zshrc ] && mv .zshrc .zshrc.bsbak
 [ -f ~/dotfiles/zshrc ] && ln -s ~/dotfiles/zshrc .zshrc
 [ -f ~/.oh-my-zsh -a -f ~/dotfiles/oh-my-zsh ] && mv .oh-my-zsh .oh-my-zsh.bsbak
