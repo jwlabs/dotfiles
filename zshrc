@@ -69,7 +69,7 @@ ZSH_CUSTOM=~/dotfiles/zsh-custom
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git kubectl vscode python)
+plugins=(aws git kubectl vscode wd fzf python)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -99,6 +99,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-export PATH=$PATH:$HOME/.krew/bin:$HOME/go/bin:$HOME/.local/bin
+export PATH=$PATH:$HOME/.bin:$HOME/.krew/bin:$HOME/go/bin:$HOME/.local/bin
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

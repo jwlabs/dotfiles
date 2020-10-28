@@ -1,0 +1,55 @@
+#!/bin/bash
+
+## Install utilities
+echo -n " == Preparing APT Sources == "
+sudo apt-get update -q > /dev/null
+sudo apt-get install -q -y apt-transport-https gnupg2 curl > /dev/null
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+[ ! -f /etc/apt/sources.list.d/kubernetes.list ] && echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list > /dev/null
+sudo apt-get update -q > /dev/null
+echo "Done."
+
+echo -n " == Installing APT packages == "
+sudo apt-get install -q -y zsh fzf kubectl golang jq awscli > /dev/null
+echo "Done."
+
+echo -n " == Downloading git binary releases in ~/.bin == "
+[ ! -e ~/.bin ] && mkdir ~/.bin
+grep -q "~/.bin" <<< "$PATH" || export PATH=$PATH:~/.bin
+if [ ! -x ~/.bin/kubectx ] && [ ! -x ~/.bin/kubens ]
+then
+  wget -O ~/.bin/kubectx https://github.com/ahmetb/kubectx/releases/latest/download/kubectx
+  wget -O ~/.bin/kubens https://github.com/ahmetb/kubectx/releases/latest/download/kubens
+  chmod +x ~/.bin/kubectx ~/.bin/kubens
+fi
+echo "Done."
+
+echo -n " == Downloading go commands == "
+cd ~
+GO111MODULE=on go get github.com/mikefarah/yq/v3 > /dev/null
+echo "Done."
+
+## Configure Home environment
+cd ~
+echo -n " == Preparing dotfiles == "
+[ -d ~/dotfiles ] && git clone https://github.com/jwlabs/dotfiles
+[ -f ~/.zshrc -a -f ~/dotfiles/zshrc ] && mv .zshrc .zshrc.bsbak
+[ -f ~/dotfiles/zshrc ] && ln -s ~/dotfiles/zshrc .zshrc
+[ -f ~/.oh-my-zsh -a -f ~/dotfiles/oh-my-zsh ] && mv .oh-my-zsh .oh-my-zsh.bsbak
+[ -f ~/dotfiles/oh-my-zsh ] && ln -s ~/dotfiles/oh-my-zsh .oh-my-zsh
+[ -f ~/.bashrc -a -f ~/dotfiles/bashrc ] && mv .bashrc bashrc.bsbak
+[ -f ~/dotfiles/bashrc ] && ln -s ~/dotfiles/bashrc .bashrc
+[ -f ~/.gitconfig -a -f ~/dotfiles/gitconfig ] && mv .gitconfig gitconfig.bsbak
+[ -f ~/dotfiles/gitconfig ] && ln -s ~/dotfiles/gitconfig .gitconfig
+echo "Done."
+echo
+echo "Please create the links to the Lab manually."
+# Locate OneDrive folder and link to Lab (to be added)
+
+
+
+
+echo 
+echo "Please download tmc cli manually."
+### Remains manual
+# tmc: https://vmware.bintray.com/tmc/0.2.0-b11584d8/linux/x64/tmc
